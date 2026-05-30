@@ -235,3 +235,5 @@ npm run dev
 <h3>Admin dashboard - All users page</h3>
 
 ![singitronic admin users page](https://github.com/Kuzma02/Electronics-eCommerce-Shop-With-Admin-Dashboard-NextJS-NodeJS/assets/138793624/e14e8f2c-4377-42fd-b89b-d4868cc11b11)
+#   N E X T J S 1  
+ 
