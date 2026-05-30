@@ -14,93 +14,106 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white" aria-labelledby="footer-heading">
-      <div>
-        <h2 id="footer-heading" className="sr-only">
-          Footer
-        </h2>
-        <div className="mx-auto max-w-screen-2xl px-6 lg:px-8 pt-24 pb-14">
-          <div className="xl:grid xl:grid-cols-3 xl:gap-8">
+    <footer className="bg-white border-t border-gray-200" aria-labelledby="footer-heading">
+    <div>
+      <h2 id="footer-heading" className="sr-only">
+        Footer
+      </h2>
+      <div className="mx-auto max-w-6xl px-6 lg:px-8 pt-20 pb-14">
+        {/* Changed md:items-center to md:items-start to baseline align everything from the top */}
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-12">
+          
+          {/* Logo Wrapper - -mt-5 pulls the logo graphic precisely up to meet the heading text level */}
+          <div className="flex-shrink-0 -ml-4 -mt-5">
             <Image
-              src="/logo v1.png"
+              src="/MODERN E-COMMERCE.png"
               alt="Singitronic logo"
-              width={250}
-              height={250}
-              className="h-auto w-auto"
+              width={200}
+              height={60} /* Keeps container boundaries clean */
+              className="h-auto w-auto object-contain"
+              priority
             />
-            <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-              <div className="md:grid md:grid-cols-2 md:gap-8">
-                <div>
-                  <h3 className="text-lg font-bold leading-6 text-blue-600">
-                    Sale
-                  </h3>
-                  <ul role="list" className="mt-6 space-y-4">
-                    {navigation.sale.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className="text-sm leading-6 text-black hover:text-gray-700"
-                        >
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-10 md:mt-0">
-                  <h3 className="text-base font-bold leading-6 text-blue-600">
-                    About Us
-                  </h3>
-                  <ul role="list" className="mt-6 space-y-4">
-                    {navigation.about.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className="text-sm leading-6 text-black hover:text-gray-700"
-                        >
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+          </div>
+
+            {/* Links Columns Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-16 gap-y-10 flex-grow max-w-3xl">
+              
+              {/* Sale */}
+              <div>
+                <h3 className="text-sm font-bold text-blue-600 leading-6">
+                  Sale
+                </h3>
+                <ul role="list" className="mt-4 space-y-3">
+                  {navigation.sale.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        className="text-xs text-black hover:text-gray-700 whitespace-nowrap"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="md:grid md:grid-cols-2 md:gap-8">
-                <div>
-                  <h3 className="text-base font-bold leading-6 text-blue-600">
-                    Buying
-                  </h3>
-                  <ul role="list" className="mt-6 space-y-4">
-                    {navigation.buy.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className="text-sm leading-6 text-black hover:text-gray-700"
-                        >
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-10 md:mt-0">
-                  <h3 className="text-base font-bold leading-6 text-blue-600">
-                    Support
-                  </h3>
-                  <ul role="list" className="mt-6 space-y-4">
-                    {navigation.help.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className="text-sm leading-6 text-black hover:text-gray-700"
-                        >
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+
+              {/* About Us */}
+              <div>
+                <h3 className="text-sm font-bold text-blue-600 leading-6">
+                  About Us
+                </h3>
+                <ul role="list" className="mt-4 space-y-3">
+                  {navigation.about.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        className="text-xs text-black hover:text-gray-700 whitespace-nowrap"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
+
+              {/* Buying */}
+              <div>
+                <h3 className="text-sm font-bold text-blue-600">
+                  Buying
+                </h3>
+                <ul role="list" className="mt-4 space-y-3">
+                  {navigation.buy.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        className="text-xs text-black hover:text-gray-700 whitespace-nowrap"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Support */}
+              <div>
+                <h3 className="text-sm font-bold text-blue-600">
+                  Support
+                </h3>
+                <ul role="list" className="mt-4 space-y-3">
+                  {navigation.help.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        className="text-xs text-black hover:text-gray-700 whitespace-nowrap"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
             </div>
           </div>
         </div>

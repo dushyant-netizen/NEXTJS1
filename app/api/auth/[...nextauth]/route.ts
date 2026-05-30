@@ -8,7 +8,6 @@ import prisma from "@/utils/db";
 import { nanoid } from "nanoid";
 
 export const authOptions: NextAuthOptions = {
-  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -34,6 +33,7 @@ export const authOptions: NextAuthOptions = {
                 id: user.id,
                 email: user.email,
                 role: user.role,
+                image: user.image, // 🚀 1. Crucial: Pull the image from the database here
               };
             }
           }
@@ -43,15 +43,6 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
-    // Uncomment and configure these providers as needed
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID!,
-    //   clientSecret: process.env.GITHUB_SECRET!,
-    // }),
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
   ],
   callbacks: {
     async signIn({ user, account }: { user: AuthUser; account: Account }) {
@@ -59,10 +50,8 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
       
-      // Handle OAuth providers
       if (account?.provider === "github" || account?.provider === "google") {
         try {
-          // Check if user exists in database
           const existingUser = await prisma.user.findFirst({
             where: {
               email: user.email!,
@@ -70,14 +59,13 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!existingUser) {
-            // Create new user for OAuth providers
             await prisma.user.create({
               data: {
                 id: nanoid(),
                 email: user.email!,
                 role: "user",
-                // OAuth users don't have passwords
                 password: null,
+                image: user.image || null,
               },
             });
           }
@@ -90,44 +78,53 @@ export const authOptions: NextAuthOptions = {
       
       return true;
     },
-    async jwt({ token, user }) {
+    
+    // 🛠️ FIXES APPLIED TO THE JWT CALLBACK:
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = user.role;
         token.id = user.id;
-        token.iat = Math.floor(Date.now() / 1000); // Issued at time
+        token.picture = user.image; // 🚀 2. Store the initial database image into the JWT session cookie
+        token.iat = Math.floor(Date.now() / 1000);
       }
       
-      // Check if token is expired (15 minutes)
+      // 🚀 3. Handle the dynamic client-side `update()` event when the user drops in a new DP
+      if (trigger === "update" && session?.user?.image) {
+        token.picture = session.user.image;
+      }
+      
       const now = Math.floor(Date.now() / 1000);
       const tokenAge = now - (token.iat as number);
       const maxAge = 15 * 60; // 15 minutes
       
       if (tokenAge > maxAge) {
-        // Token expired, return empty object to force re-authentication
         return {};
       }
       
       return token;
     },
+
+    // 🛠️ FIXES APPLIED TO THE SESSION CALLBACK:
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
+        session.user.image = token.picture as string; // 🚀 4. Pass the image cookie value cleanly to the frontend layout elements
       }
       return session;
     },
   },
   pages: {
     signIn: '/login',
-    error: '/login', // Redirect to login page on auth errors
+    error: '/login',
   },
   session: {
     strategy: "jwt",
-    maxAge: 15 * 60, // 15 minutes in seconds
-    updateAge: 5 * 60, // Update session every 5 minutes
+    maxAge: 15 * 60,
+    updateAge: 5 * 60,
   },
   jwt: {
-    maxAge: 15 * 60, // 15 minutes in seconds
+    maxAge: 15 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",

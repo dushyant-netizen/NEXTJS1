@@ -9,9 +9,9 @@ export async function requireAdmin() {
     redirect("/login");
   }
   
-  if ((session as any)?.user?.role !== "admin") {
+  if ((session as any)?.user?.role?.toLowerCase() !== "admin") {
     redirect("/");
-  }
+  }  
   
   return session;
 }

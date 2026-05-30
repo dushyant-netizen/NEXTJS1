@@ -21,11 +21,15 @@ const LoginPage = () => {
       toast.error("Your session has expired. Please log in again.");
     }
     
-    // if user has already logged in redirect to home page
+    // ⚡ If authenticated, route users based on their role
     if (sessionStatus === "authenticated") {
-      router.replace("/");
+      if (session?.user?.role === "admin") {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     }
-  }, [sessionStatus, router, searchParams]);
+  }, [sessionStatus, session, router, searchParams]); // Added 'session' to dependency array
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

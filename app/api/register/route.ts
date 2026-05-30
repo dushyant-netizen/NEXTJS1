@@ -36,17 +36,25 @@ export const POST = async (request: Request) => {
       throw new AppError("Email is already in use", 400);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 14);
+// ... existing validation and password hashing code above ...
 
-    // Create user with proper error handling
-    const newUser = await prisma.user.create({
-      data: {
-        id: nanoid(),
-        email,
-        password: hashedPassword,
-        role: "user",
-      },
-    });
+const hashedPassword = await bcrypt.hash(password, 14);
+
+// 1. Define your admin email (lowercase for safe matching)
+const ADMIN_EMAIL = "dushyantkuverma2001@gmail.com";
+
+// 2. Set role to "admin" if it matches your email, otherwise default to "user"
+const assignedRole = email.toLowerCase() === ADMIN_EMAIL ? "admin" : "user";
+
+// Create user with proper error handling
+const newUser = await prisma.user.create({
+  data: {
+    id: nanoid(),
+    email,
+    password: hashedPassword,
+    role: assignedRole, // 👈 Changed from hardcoded "user" to dynamic variable
+  },
+});
 
     // Return success response without sensitive data
     return new NextResponse(

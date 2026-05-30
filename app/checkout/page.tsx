@@ -7,6 +7,8 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import apiClient from "@/lib/api";
+import Stripe from "stripe"; // 👈 ADD THIS LINE
+
 
 const CheckoutPage = () => {
   const { data: session } = useSession();
@@ -30,7 +32,7 @@ const CheckoutPage = () => {
 
   // Add validation functions that match server requirements
   const validateForm = () => {
-    const errors: string[] = [];
+    const errors = []; // Removed TypeScript ': string[]' annotation
     
     // Name validation
     if (!checkoutForm.name.trim() || checkoutForm.name.trim().length < 2) {
@@ -54,9 +56,9 @@ const CheckoutPage = () => {
       errors.push("Phone number must be at least 10 digits");
     }
     
-    // Company validation
-    if (!checkoutForm.company.trim() || checkoutForm.company.trim().length < 5) {
-      errors.push("Company must be at least 5 characters");
+    // Company validation (OPTIONAL - only checks if user starts typing)
+    if (checkoutForm.company.trim() && checkoutForm.company.trim().length < 5) {
+      errors.push("Company must be at least 5 characters if provided");
     }
     
     // Address validation
@@ -64,9 +66,9 @@ const CheckoutPage = () => {
       errors.push("Address must be at least 5 characters");
     }
     
-    // Apartment validation (updated to 1 character minimum)
-    if (!checkoutForm.apartment.trim() || checkoutForm.apartment.trim().length < 1) {
-      errors.push("Apartment is required");
+    // Apartment validation (OPTIONAL - only checks if user starts typing)
+    if (checkoutForm.apartment.trim() && checkoutForm.apartment.trim().length < 1) {
+      errors.push("Apartment must be at least 1 character if provided");
     }
     
     // City validation
@@ -83,7 +85,7 @@ const CheckoutPage = () => {
     if (!checkoutForm.postalCode.trim() || checkoutForm.postalCode.trim().length < 3) {
       errors.push("Postal code must be at least 3 characters");
     }
-    
+  
     return errors;
   };
 
@@ -238,33 +240,48 @@ const CheckoutPage = () => {
       console.log(" All products added successfully!");
 
       // Clear form and cart
-      setCheckoutForm({
-        name: "",
-        lastname: "",
-        phone: "",
-        email: "",
-        company: "",
-        adress: "",
-        apartment: "",
-        city: "",
-        country: "",
-        postalCode: "",
-        orderNotice: "",
-      });
-      clearCart();
-      
-      // Refresh notification count if user is logged in
-      try {
-        // This will trigger a refresh of notifications in the background
-        window.dispatchEvent(new CustomEvent('orderCompleted'));
-      } catch (error) {
-        console.log('Note: Could not trigger notification refresh');
-      }
-      
-      toast.success("Order created successfully! You will be contacted for payment.");
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+      // PASTE THIS EXACT REPLACEMENT BLOCK:
+try {
+  // Refresh notification count if user is logged in before redirecting
+  window.dispatchEvent(new CustomEvent('orderCompleted'));
+} catch (e) {
+  console.log('Note: Could not trigger notification refresh');
+}
+
+// Calculate the final checkout total mirroring your UI calculation
+const totalWithTaxAndShipping = Math.round(total + total / 5 + 5);
+
+// Create the hosted checkout checkout session 
+const stripeSessionResponse = await fetch('/api/checkout', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    amount: totalWithTaxAndShipping,
+    orderId: orderId, // Passes your server data.id string
+    email: checkoutForm.email.trim().toLowerCase(),
+    products: products
+  })
+});
+
+const sessionData = await stripeSessionResponse.json();
+
+if (sessionData.url) {
+  // Clear cart state right before leaving the web app
+  clearCart();
+  
+  // Clear the address inputs so it's clean if they hit back later
+  setCheckoutForm({
+    name: "", lastname: "", phone: "", email: "", company: "",
+    adress: "", apartment: "", city: "", country: "", postalCode: "", orderNotice: ""
+  });
+
+  // Redirect instantly to Stripe's payment cloud view interface
+  window.location.href = sessionData.url;
+  return; // Stop execution to prevent hitting the catch blocks below
+} else {
+  toast.error("Failed to initialize payment checkout portal.");
+}
+
     } catch (error: any) {
       console.error("💥 Error in makePurchase:", error);
       

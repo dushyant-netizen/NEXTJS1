@@ -49,6 +49,7 @@ model User {
   notifications Notification[]
   // Back relation for bulk upload batches
   bulkUploadBatches bulk_upload_batch[] @relation("UserBatches")
+  image     String?  @db.Text 
 }
 
 model Customer_order {
