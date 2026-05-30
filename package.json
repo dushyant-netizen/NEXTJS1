@@ -10,10 +10,11 @@
     "lint": "next lint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "install": "npm install --legacy-peer-deps",
+     "build": "npm run build"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
     "@prisma/client": "^6.16.1",
     "@stripe/react-stripe-js": "^6.4.0",
     "@stripe/stripe-js": "^9.6.0",
@@ -27,14 +28,12 @@
     "dompurify": "^3.0.8",
     "express-fileupload": "^1.5.0",
     "express-rate-limit": "^8.1.0",
-    "flowbite-react": "^0.7.2",
+    "flowbite-react": "^0.6.8",
     "nanoid": "^5.0.6",
     "next": "^16.2.6",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.17.5",
-    "react": "^19.2.6",
     "react-apexcharts": "^1.4.1",
-    "react-dom": "^19.2.6",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.0.1",
     "react-slick": "^0.30.2",
@@ -42,7 +41,10 @@
     "stripe": "^22.1.1",
     "svgmap": "^2.10.1",
     "zod": "^3.22.4",
-    "zustand": "^4.5.1"
+    "zustand": "^4.5.1",
+    "@headlessui/react": "^2.1.0",      
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
