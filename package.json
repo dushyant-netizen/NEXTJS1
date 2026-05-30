@@ -28,9 +28,7 @@
     "dompurify": "^3.0.8",
     "express-fileupload": "^1.5.0",
     "express-rate-limit": "^8.1.0",
-    "flowbite-react": "^0.6.8",
     "nanoid": "^5.0.6",
-    "next": "^16.2.6",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.17.5",
     "react-apexcharts": "^1.4.1",
@@ -42,9 +40,12 @@
     "svgmap": "^2.10.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.1",
-    "@headlessui/react": "^2.1.0",      
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+  "react-dom": "^18.3.1",
+  "next": "^14.2.15",
+  "flowbite-react": "^0.7.2",
+  "@headlessui/react": "^2.1.0",
+  "@floating-ui/react": "^0.26.10"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
