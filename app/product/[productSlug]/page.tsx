@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic';
 
 import {
   StockAvailabillity,
@@ -26,6 +25,8 @@ interface ImageItem {
 interface SingleProductPageProps {
   params: Promise<{  productSlug: string, id: string }>;
 }
+
+export const dynamic = 'force-dynamic';
 
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const paramsAwaited = await params;
