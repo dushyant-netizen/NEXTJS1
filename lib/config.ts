@@ -1,14 +1,16 @@
 // config.ts
 const getApiBaseUrl = (): string => {
-  // Client-side
-  if (typeof window !== 'undefined') {
+  // During build time or server-side
+  if (process.env.NODE_ENV === 'production') {
     return process.env.NEXT_PUBLIC_API_BASE_URL || '';
   }
 
-  // Server-side (Vercel)
-  return process.env.API_BASE_URL || 
-         process.env.NEXT_PUBLIC_API_BASE_URL || 
-         'http://localhost:3000';   // Use 3000 for local dev
+  // Development
+  if (typeof window !== 'undefined') {
+    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
+  }
+
+  return process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
 };
 
 const config = {
