@@ -51,7 +51,7 @@ const BulkUploadHistory = () => {
   const fetchBatchHistory = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3001/api/bulk-upload");
+      const response = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/bulk-upload");
 
       if (response.ok) {
         const data = await response.json();
@@ -81,7 +81,7 @@ const BulkUploadHistory = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/bulk-upload/${batchToDelete.id}?deleteProducts=${deleteProducts}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/bulk-upload/${batchToDelete.id}?deleteProducts=${deleteProducts}`,
         {
           method: "DELETE",
         }
