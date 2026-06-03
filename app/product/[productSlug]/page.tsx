@@ -1,20 +1,15 @@
-
 import {
   StockAvailabillity,
-  UrgencyText,
-
   ProductTabs,
   SingleProductDynamicFields,
-  
 } from "@/components";
 import apiClient from "@/lib/api";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
-import { FaSquareFacebook } from "react-icons/fa6";
-import { FaSquareXTwitter } from "react-icons/fa6";
-import { FaSquarePinterest } from "react-icons/fa6";
+import { FaSquareFacebook, FaSquareXTwitter, FaSquarePinterest } from "react-icons/fa6";
 import { sanitize } from "@/lib/sanitize";
+import RecommendationGrid from "@/components/RecommendationGrid";
 
 interface ImageItem {
   imageID: string;
@@ -23,23 +18,18 @@ interface ImageItem {
 }
 
 interface SingleProductPageProps {
-  params: Promise<{  productSlug: string, id: string }>;
+  params: Promise<{ productSlug: string; id: string }>;
 }
-
-export const dynamic = 'force-dynamic';
 
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const paramsAwaited = await params;
-  // sending API request for a single product with a given product slug
-  const data = await apiClient.get(
-    `/api/slugs/${paramsAwaited?.productSlug}`
-  );
+
+  // 1. Fetch Product Data
+  const data = await apiClient.get(`/api/slugs/${paramsAwaited?.productSlug}`);
   const product = await data.json();
 
-  // sending API request for more than 1 product image if it exists
-  const imagesData = await apiClient.get(
-    `/api/images/${paramsAwaited?.id}`
-  );
+  // 2. Fetch Additional Images
+  const imagesData = await apiClient.get(`/api/images/${paramsAwaited?.id}`);
   const images = await imagesData.json();
 
   if (!product || product.error) {
@@ -50,6 +40,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
     <div className="bg-white">
       <div className="max-w-screen-2xl mx-auto">
         <div className="flex justify-center gap-x-16 pt-10 max-lg:flex-col items-center gap-y-5 px-5">
+          {/* Product Image Section */}
           <div>
             <Image
               src={product?.mainImage ? `/${product?.mainImage}` : "/product_placeholder.jpg"}
@@ -58,30 +49,29 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
               alt="main image"
               className="w-auto h-auto"
             />
-            <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center max-[500px]:gap-x-1">
+            <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center">
               {images?.map((imageItem: ImageItem, key: number) => (
                 <Image
                   key={imageItem.imageID + key}
                   src={`/${imageItem.image}`}
                   width={100}
                   height={100}
-                  alt="laptop image"
+                  alt="product detail image"
                   className="w-auto h-auto"
                 />
               ))}
             </div>
           </div>
+
+          {/* Product Info Section */}
           <div className="flex flex-col gap-y-7 text-black max-[500px]:text-center">
-        
             <h1 className="text-3xl">{sanitize(product?.title)}</h1>
             <p className="text-xl font-semibold">${product?.price}</p>
             <StockAvailabillity stock={94} inStock={product?.inStock} />
             <SingleProductDynamicFields product={product} />
+            
             <div className="flex flex-col gap-y-2 max-[500px]:items-center">
-             
-              <p className="text-lg">
-                SKU: <span className="ml-1">abccd-18</span>
-              </p>
+              <p className="text-lg">SKU: <span className="ml-1">abccd-18</span></p>
               <div className="text-lg flex gap-x-2">
                 <span>Share:</span>
                 <div className="flex items-center gap-x-1 text-2xl">
@@ -90,55 +80,22 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
                   <FaSquarePinterest />
                 </div>
               </div>
+              {/* Payment Methods */}
               <div className="flex gap-x-2">
-                <Image
-                  src="/visa.svg"
-                  width={50}
-                  height={50}
-                  alt="visa icon"
-                  className="w-auto h-auto"
-                />
-                <Image
-                  src="/mastercard.svg"
-                  width={50}
-                  height={50}
-                  alt="mastercard icon"
-                  className="h-auto w-auto"
-                />
-                <Image
-                  src="/ae.svg"
-                  width={50}
-                  height={50}
-                  alt="americal express icon"
-                  className="h-auto w-auto"
-                />
-                <Image
-                  src="/paypal.svg"
-                  width={50}
-                  height={50}
-                  alt="paypal icon"
-                  className="w-auto h-auto"
-                />
-                <Image
-                  src="/dinersclub.svg"
-                  width={50}
-                  height={50}
-                  alt="diners club icon"
-                  className="h-auto w-auto"
-                />
-                <Image
-                  src="/discover.svg"
-                  width={50}
-                  height={50}
-                  alt="discover icon"
-                  className="h-auto w-auto"
-                />
+                {['visa', 'mastercard', 'ae', 'paypal', 'dinersclub', 'discover'].map((icon) => (
+                  <Image key={icon} src={`/${icon}.svg`} width={50} height={50} alt={`${icon} icon`} className="w-auto h-auto" />
+                ))}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Product Details Tabs */}
         <div className="py-16">
           <ProductTabs product={product} />
+          
+          {/* Recommendation Engine Component */}
+          <RecommendationGrid currentProductId={paramsAwaited.id} />
         </div>
       </div>
     </div>

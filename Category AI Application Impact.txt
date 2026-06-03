@@ -1,0 +1,5 @@
+Category	AI Application	Impact
+
+Search & Discovery	NLP-based search	Understands user intent beyond keywords, reducing bounce rates
+Personalization	Recommendation Engines	Suggests products based on individual behavior and history.
+Customer Support	Autonomous Agents	Handles routine inquiries (order status, returns) end-to-end.
