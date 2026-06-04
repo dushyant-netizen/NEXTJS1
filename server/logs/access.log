@@ -3784,3 +3784,12 @@
 ::1 - - [22/May/2026:06:31:56 +0000] "GET /api/products?filters[price][$lte]=3000&filters[rating][$gte]=0&filters[inStock][$lte]=1&sort=defaultSort&page=1 HTTP/1.1" 200 3571 "-" "node" reqId=lkpm8J6w userId=anonymous
 ::1 - - [22/May/2026:06:31:56 +0000] "GET /api/products?filters[price][$lte]=3000&filters[rating][$gte]=0&filters[inStock][$lte]=1&sort=defaultSort&page=1 HTTP/1.1" 200 3571 "-" "node" reqId=YGyTfJVf userId=anonymous
 ::1 - - [22/May/2026:06:32:01 +0000] "GET /api/products HTTP/1.1" 200 3571 "-" "node" reqId=PBLnw4_m userId=anonymous
+::ffff:127.0.0.1 - - [03/Jun/2026:04:39:09 +0000] "GET /api/products HTTP/1.1" 200 3571 "-" "insomnia/12.5.0" reqId=Tg1WJHlB userId=anonymous
+::1 - - [03/Jun/2026:04:39:42 +0000] "GET /api/products HTTP/1.1" 200 3571 "-" "node" reqId=6_2MqT-b userId=anonymous
+::1 - - [03/Jun/2026:04:47:20 +0000] "GET /api/slugs/smart-phone-demo HTTP/1.1" 200 341 "-" "node" reqId=tIDa9ilZ userId=anonymous
+::1 - - [03/Jun/2026:04:47:20 +0000] "GET /api/slugs/smart-phone-demo HTTP/1.1" 200 341 "-" "node" reqId=Ek-UOGn9 userId=anonymous
+::1 - - [03/Jun/2026:04:47:20 +0000] "GET /api/images/undefined HTTP/1.1" 200 2 "-" "node" reqId=ux3F6XPx userId=anonymous
+::1 - - [03/Jun/2026:04:47:20 +0000] "GET /api/images/undefined HTTP/1.1" 200 2 "-" "node" reqId=7sW6ZUWd userId=anonymous
+::1 - - [03/Jun/2026:04:48:49 +0000] "GET /api/products?filters[price][$lte]=3000&filters[rating][$gte]=0&filters[inStock][$gt]=1&sort=undefined&page=1 HTTP/1.1" 200 2 "-" "node" reqId=STTjPAZz userId=anonymous
+::1 - - [03/Jun/2026:04:48:50 +0000] "GET /api/products?filters[price][$lte]=3000&filters[rating][$gte]=0&filters[inStock][$lte]=1&sort=defaultSort&page=1 HTTP/1.1" 200 3571 "-" "node" reqId=pvTiOOXS userId=anonymous
+::1 - - [03/Jun/2026:04:48:50 +0000] "GET /api/products?filters[price][$lte]=3000&filters[rating][$gte]=0&filters[inStock][$lte]=1&sort=defaultSort&page=1 HTTP/1.1" 200 3571 "-" "node" reqId=i1gcbmsZ userId=anonymous
