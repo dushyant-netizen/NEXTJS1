@@ -2,30 +2,52 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 
-export default async function RecommendationGrid({ currentProductId }: { currentProductId: string }) {
+export default async function RecommendationGrid({ currentProductId }) {
+  const url =  `${process.env.NEXT_PUBLIC_API_URL}/api/products/${currentProductId}/recommendations`;
+
+  console.log("Recommendations URL:", url);
+
   try {
-    // Replace with your actual deployed Render backend URL or environment variable
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recommendations/${currentProductId}`, {
-      next: { revalidate: 3600 } // Cache for 1 hour to save on API/DB costs
+    const response = await fetch(url, {
+      next: { revalidate: 3600 }
     });
 
-    if (!response.ok) return null;
+    console.log("Recommendations status:", response.status);
+
+    if (!response.ok) {
+      return (
+        <div className="text-red-500">
+          Recommendation API failed: {response.status}
+        </div>
+      );
+    }
+
     const recommendations = await response.json();
 
-    if (recommendations.length === 0) return null;
+    console.log("Recommendations:", recommendations);
+
+    if (!recommendations?.length) {
+      return (
+        <div className="text-yellow-500">
+          No recommendations found
+        </div>
+      );
+    }
+    console.log("currentProductId", currentProductId);
 
     return (
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">You might also like</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {recommendations.map((product: any) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+      <div>
+        <h2>You might also like</h2>
+        {/* cards */}
       </div>
     );
   } catch (error) {
-    console.error("Failed to load recommendations:", error);
-    return null; // Graceful degradation
+    console.error(error);
+
+    return (
+      <div className="text-red-500">
+        Recommendation fetch crashed
+      </div>
+    );
   }
 }

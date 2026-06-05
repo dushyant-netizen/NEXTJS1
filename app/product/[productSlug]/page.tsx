@@ -31,7 +31,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   // 2. Fetch Additional Images
   const imagesData = await apiClient.get(`/api/images/${paramsAwaited?.id}`);
   const images = await imagesData.json();
-
+  console.log("paramsAwaited.id", paramsAwaited.id);
   if (!product || product.error) {
     notFound();
   }
@@ -95,7 +95,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
           <ProductTabs product={product} />
           
           {/* Recommendation Engine Component */}
-          <RecommendationGrid currentProductId={paramsAwaited.id} />
+          <RecommendationGrid currentProductId={product.id} />
         </div>
       </div>
     </div>
