@@ -1,52 +1,56 @@
-// components/RecommendationGrid.tsx
 import React from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard'; // Adjust path if necessary
 
-export default async function RecommendationGrid({ currentProductId }) {
-  const url =  `${process.env.NEXT_PUBLIC_API_URL}/api/products/${currentProductId}/recommendations`;
+interface RecommendationGridProps {
+  currentProductId: string;
+}
 
-  console.log("Recommendations URL:", url);
+export default async function RecommendationGrid({ currentProductId }: RecommendationGridProps) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const url = `${apiUrl}/api/products/${currentProductId}/recommendations`;
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 3600 }
+      next: { revalidate: 3600 } // Cache for 1 hour
     });
-
-    console.log("Recommendations status:", response.status);
 
     if (!response.ok) {
       return (
-        <div className="text-red-500">
-          Recommendation API failed: {response.status}
+        <div className="text-red-500 py-10 text-center">
+          Failed to load recommendations.
         </div>
       );
     }
 
-    const recommendations = await response.json();
+    const json = await response.json();
+    const recommendations = json.data; // Extract the data array!
 
-    console.log("Recommendations:", recommendations);
-
-    if (!recommendations?.length) {
+    if (!recommendations || recommendations.length === 0) {
       return (
-        <div className="text-yellow-500">
-          No recommendations found
+        <div className="text-gray-500 py-10 text-center">
+          No recommendations found at this time.
         </div>
       );
     }
-    console.log("currentProductId", currentProductId);
 
     return (
-      <div>
-        <h2>You might also like</h2>
-        {/* cards */}
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold mb-8 max-[500px]:text-center">
+          You might also like
+        </h2>
+        {/* Responsive Grid layout for cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {recommendations.map((product: any) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     );
   } catch (error) {
-    console.error(error);
-
+    console.error("Recommendation API Error:", error);
     return (
-      <div className="text-red-500">
-        Recommendation fetch crashed
+      <div className="text-red-500 py-10 text-center">
+        Error loading recommendations.
       </div>
     );
   }

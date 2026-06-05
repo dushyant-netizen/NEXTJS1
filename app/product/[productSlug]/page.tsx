@@ -28,12 +28,17 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const data = await apiClient.get(`/api/slugs/${paramsAwaited?.productSlug}`);
   const product = await data.json();
 
-  // 2. Fetch Additional Images
-  const imagesData = await apiClient.get(`/api/images/${paramsAwaited?.id}`);
-  const images = await imagesData.json();
-  console.log("paramsAwaited.id", paramsAwaited.id);
   if (!product || product.error) {
     notFound();
+  }
+
+  // 2. Fetch Additional Images (Handled safely if API fails)
+  let images = [];
+  try {
+    const imagesData = await apiClient.get(`/api/images/${product.id}`);
+    images = await imagesData.json();
+  } catch (e) {
+    console.log("No extra images found");
   }
 
   return (
@@ -47,7 +52,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
               width={500}
               height={500}
               alt="main image"
-              className="w-auto h-auto"
+              className="w-auto h-auto rounded-lg shadow-sm"
             />
             <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center">
               {images?.map((imageItem: ImageItem, key: number) => (
@@ -57,7 +62,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
                   width={100}
                   height={100}
                   alt="product detail image"
-                  className="w-auto h-auto"
+                  className="w-auto h-auto rounded-md border border-gray-200"
                 />
               ))}
             </div>
@@ -65,36 +70,38 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
 
           {/* Product Info Section */}
           <div className="flex flex-col gap-y-7 text-black max-[500px]:text-center">
-            <h1 className="text-3xl">{sanitize(product?.title)}</h1>
-            <p className="text-xl font-semibold">${product?.price}</p>
+            <h1 className="text-3xl font-bold">{sanitize(product?.title)}</h1>
+            <p className="text-2xl font-semibold text-blue-600">${product?.price}</p>
             <StockAvailabillity stock={94} inStock={product?.inStock} />
             <SingleProductDynamicFields product={product} />
             
-            <div className="flex flex-col gap-y-2 max-[500px]:items-center">
-              <p className="text-lg">SKU: <span className="ml-1">abccd-18</span></p>
-              <div className="text-lg flex gap-x-2">
-                <span>Share:</span>
-                <div className="flex items-center gap-x-1 text-2xl">
-                  <FaSquareFacebook />
-                  <FaSquareXTwitter />
-                  <FaSquarePinterest />
+            <div className="flex flex-col gap-y-4 max-[500px]:items-center mt-4">
+              <p className="text-gray-600">SKU: <span className="ml-1 font-mono text-black">{product.id.substring(0,8)}</span></p>
+              
+              <div className="flex gap-x-3 items-center">
+                <span className="text-gray-600">Share:</span>
+                <div className="flex items-center gap-x-2 text-2xl text-gray-500">
+                  <FaSquareFacebook className="hover:text-blue-600 cursor-pointer transition-colors" />
+                  <FaSquareXTwitter className="hover:text-black cursor-pointer transition-colors" />
+                  <FaSquarePinterest className="hover:text-red-600 cursor-pointer transition-colors" />
                 </div>
               </div>
+
               {/* Payment Methods */}
-              <div className="flex gap-x-2">
+              <div className="flex gap-x-2 mt-2">
                 {['visa', 'mastercard', 'ae', 'paypal', 'dinersclub', 'discover'].map((icon) => (
-                  <Image key={icon} src={`/${icon}.svg`} width={50} height={50} alt={`${icon} icon`} className="w-auto h-auto" />
+                  <Image key={icon} src={`/${icon}.svg`} width={40} height={25} alt={`${icon} icon`} className="w-auto h-auto" />
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Product Details Tabs */}
-        <div className="py-16">
+        {/* Product Details Tabs & Recommendations */}
+        <div className="py-16 px-5">
           <ProductTabs product={product} />
           
-          {/* Recommendation Engine Component */}
+          {/* THE RECOMMENDATION GRID GOES HERE */}
           <RecommendationGrid currentProductId={product.id} />
         </div>
       </div>
