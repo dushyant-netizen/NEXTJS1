@@ -1,19 +1,31 @@
-import { ProductItem } from "@/components";
-import { getPersonalizedRecommendations } from "@/app/actions/recommendations";
+// components/RecommendationGrid.tsx
+import React from 'react';
+import ProductCard from './ProductCard'; // Assuming you have this
 
 export default async function RecommendationGrid({ currentProductId }: { currentProductId: string }) {
-  const recommendations = await getPersonalizedRecommendations(currentProductId);
+  try {
+    // Replace with your actual deployed Render backend URL or environment variable
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recommendations/${currentProductId}`, {
+      next: { revalidate: 3600 } // Cache for 1 hour to save on API/DB costs
+    });
 
-  if (!recommendations || recommendations.length === 0) return null;
+    if (!response.ok) return null;
+    const recommendations = await response.json();
 
-  return (
-    <div className="mt-16 border-t pt-10">
-      <h2 className="text-2xl font-bold mb-6 text-black">Recommended For You</h2>
-      <div className="grid grid-cols-4 justify-items-center gap-5">
-        {recommendations.map((product: any) => (
-          <ProductItem key={product.id} product={product} />
-        ))}
+    if (recommendations.length === 0) return null;
+
+    return (
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">You might also like</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {recommendations.map((product: any) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error("Failed to load recommendations:", error);
+    return null; // Graceful degradation
+  }
 }

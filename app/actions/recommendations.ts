@@ -1,6 +1,6 @@
 "use server";
 
-import { pool } from "@/lib/db";
+import { pool } from "../../../NEXT-MBE/server/lib/db";
 
 export async function getPersonalizedRecommendations(currentProductId: string) {
   try {

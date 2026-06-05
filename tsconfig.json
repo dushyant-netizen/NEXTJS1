@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "../NEXT-MBE/server/lib/db.ts", "../NEXT-MBE/server/lib/openai.ts"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,7 +1,7 @@
 "use server";
 
 import { openai } from "@/lib/openai";
-import { pool } from "@/lib/db"; 
+import { pool } from "../../../NEXT-MBE/server/lib/db"; 
 
 export async function performSemanticSearch(query: string) {
   try {
