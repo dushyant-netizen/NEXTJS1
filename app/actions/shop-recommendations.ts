@@ -1,7 +1,7 @@
 // app/actions/shop-recommendations.ts
 "use server";
 
-import { pool } from "../../../NEXT-MBE/server/lib/db";
+import { pool } from "@/lib/db";
 
 export async function getCategoryRecommendations(categorySlug: string) {
   try {
