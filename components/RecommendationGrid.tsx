@@ -11,7 +11,11 @@ export default async function RecommendationGrid({ currentProductId }: Recommend
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 3600 } // Cache for 1 hour
+      next: { revalidate: 3600 }, // Cache for 1 hour
+      cache: 'no-store',
+      headers: {
+     'Cache-Control': 'no-cache'
+  }
     });
 
     if (!response.ok) {
