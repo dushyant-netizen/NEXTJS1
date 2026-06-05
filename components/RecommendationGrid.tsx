@@ -1,6 +1,6 @@
 // components/RecommendationGrid.tsx
 import React from 'react';
-import ProductCard from '../components/ProductCard'; // Assuming you have this
+import ProductCard from './ProductCard';
 
 export default async function RecommendationGrid({ currentProductId }: { currentProductId: string }) {
   try {
