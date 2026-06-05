@@ -6,8 +6,8 @@ interface RecommendationGridProps {
 }
 
 export default async function RecommendationGrid({ currentProductId }: RecommendationGridProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
-  const url = `${apiUrl}/api/products/${currentProductId}/recommendations`;
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://nextjs1-be-render.onrender.com';
+  const url = `$https://nextjs1-be-render.onrender.com/api/products/${currentProductId}/recommendations`;
 
   try {
     const response = await fetch(url, {
