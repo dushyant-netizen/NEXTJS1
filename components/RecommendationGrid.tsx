@@ -1,71 +1,59 @@
+// components/RecommendationGrid.tsx
 import React from 'react';
 
 interface RecommendationGridProps {
-  currentProductId: string;
+  currentProductId?: string;
 }
 
 export default async function RecommendationGrid({ currentProductId }: RecommendationGridProps) {
-  // Fallback to "1" if your dynamic route parameter isn't reading the ID correctly
+  // Fallback to "1" if no product ID is passed or available yet
   const idToUse = currentProductId && currentProductId !== "undefined" ? currentProductId : "1";
   const url = `https://nextjs1-be-render.onrender.com/api/products/${idToUse}/recommendations`;
 
   try {
     const response = await fetch(url, { 
-      cache: 'no-store', // Force Next.js to pull live data every refresh
+      cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache' }
     });
     
-    if (!response.ok) {
-      return (
-        <div className="p-4 border border-red-500 bg-red-50 text-red-700 font-mono my-6">
-          Backend returned HTTP Error status: {response.status}
-        </div>
-      );
-    }
+    if (!response.ok) return null; // Hide quietly if network drops
 
     const json = await response.json();
     const items = json.data || [];
 
-    return (
-      <div className="mt-12 w-full border-t border-gray-200 pt-8 text-black block">
-        {/* DIAGNOSTIC BANNER - If you don't see this box, the component isn't mounting at all */}
-        <div className="bg-yellow-50 border-2 border-dashed border-yellow-400 p-4 rounded mb-6 font-mono text-xs">
-          <p className="font-bold text-yellow-800">🛠️ Recommendation Grid Debug Engine</p>
-          <p>Called Endpoint: <a href={url} target="_blank" rel="noreferrer" className="underline text-blue-600">{url}</a></p>
-          <p>Items Unpacked: {items.length}</p>
-        </div>
+    if (items.length === 0) return null;
 
-        <h2 className="text-2xl font-bold mb-6 text-black">You might also like</h2>
-        
-        {items.length === 0 ? (
-          <p className="text-gray-500 italic">Connected to API, but database has zero alternative cross-reference items.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {items.map((prod: any) => (
-              <div key={prod.id} className="border border-gray-200 p-4 rounded-lg bg-white flex flex-col justify-between">
-                <div>
-                  <div className="w-full h-40 bg-gray-50 rounded flex items-center justify-center p-2 mb-3">
-                    {/* Using raw HTML img instead of next/image to prevent path optimization crashes */}
-                    <img 
-                      src={prod.mainImage ? (prod.mainImage.startsWith('http') ? prod.mainImage : `/${prod.mainImage}`) : "/product_placeholder.jpg"} 
-                      alt={prod.title}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-sm text-black line-clamp-2 h-10">{prod.title}</h3>
-                </div>
-                <p className="text-blue-600 font-bold mt-2">${prod.price}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  } catch (err: any) {
     return (
-      <div className="p-4 border border-red-500 bg-red-50 text-red-700 font-mono my-6">
-        🔥 Critical Runtime Fetch Failure: {err?.message || "Unknown client error"}
+      <div className="mt-16 w-full border-t border-gray-200 pt-12">
+        <h2 className="text-2xl font-bold mb-8 text-gray-900">You might also like</h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {items.map((prod: any) => (
+            <a 
+              href={`/products/${prod.slug}`} 
+              key={prod.id} 
+              className="group border border-gray-100 p-4 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div>
+                <div className="w-full h-44 bg-gray-50 rounded-lg flex items-center justify-center p-4 mb-4 group-hover:bg-gray-100 transition-colors">
+                  <img 
+                    src={prod.mainImage ? `/${prod.mainImage}` : "/product_placeholder.jpg"} 
+                    alt={prod.title}
+                    className="max-h-full max-w-full object-contain mix-blend-multiply"
+                  />
+                </div>
+                <h3 className="font-medium text-sm text-gray-800 line-clamp-2 h-10 group-hover:text-blue-600 transition-colors">
+                  {prod.title}
+                </h3>
+              </div>
+              <p className="text-blue-600 font-bold mt-3 text-base">${prod.price}</p>
+            </a>
+          ))}
+        </div>
       </div>
     );
+  } catch (err) {
+    console.error("Recommendations failed to render:", err);
+    return null;
   }
 }
