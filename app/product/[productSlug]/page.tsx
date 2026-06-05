@@ -24,13 +24,16 @@ interface SingleProductPageProps {
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const paramsAwaited = await params;
 
-  // 1. Fetch Product Data
-  const data = await apiClient.get(`/api/slugs/${paramsAwaited?.productSlug}`);
-  const product = await data.json();
+// 1. Fetch Product Data
+const responseData = await apiClient.get(`/api/slugs/${paramsAwaited?.productSlug}`);
+const jsonResult = await responseData.json();
 
-  if (!product || product.error) {
-    notFound();
-  }
+// Safely extract the inner product whether it is wrapped in .data or returned directly
+const product = jsonResult.data ? jsonResult.data : jsonResult;
+
+if (!product || product.error || !product.id) {
+  notFound();
+}
 
   // 2. Fetch Additional Images (Handled safely if API fails)
   let images = [];

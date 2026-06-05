@@ -6,7 +6,7 @@ interface RecommendationGridProps {
 }
 
 export default async function RecommendationGrid({ currentProductId }: RecommendationGridProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
   const url = `${apiUrl}/api/products/${currentProductId}/recommendations`;
 
   try {
