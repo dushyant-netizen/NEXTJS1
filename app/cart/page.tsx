@@ -1,15 +1,12 @@
 import {
-  SectionTitle
+  SectionTitle,
+  RecommendationGrid // Imported cleanly from index now!
 } from "@/components";
 import { Loader } from "@/components/Loader";
 import { CartModule } from "@/components/modules/cart";
 import { Suspense } from "react";
-// Import your recommendation component
-import RecommendationGrid from "@/components/RecommendationGrid";
 
-// Force fresh dynamic rendering to bypass any stale Next.js cache blocks
 export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
 
 const CartPage = () => {
   return (
@@ -25,8 +22,7 @@ const CartPage = () => {
             <CartModule />
           </Suspense>
 
-          {/* 🚀 THE RECOMMENDATION COMPONENT SPLIT */}
-          {/* Wrapped in Suspense so if the API delays, the cart layout still shows instantly */}
+          {/* 🌟 Renders the generalized store suggestions smoothly below the cart elements */}
           <Suspense fallback={<div className="py-10 text-center text-gray-400">Loading suggestions...</div>}>
             <RecommendationGrid />
           </Suspense>
