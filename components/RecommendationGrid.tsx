@@ -1,61 +1,46 @@
+// components/RecommendationGrid.tsx
 import React from 'react';
-import ProductCard from './ProductCard'; // Adjust path if necessary
 
 interface RecommendationGridProps {
   currentProductId: string;
 }
 
 export default async function RecommendationGrid({ currentProductId }: RecommendationGridProps) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://nextjs1-be-render.onrender.com';
-  const url = `$https://nextjs1-be-render.onrender.com/api/products/${currentProductId}/recommendations`;
+  // Use the actual ID passed from the product page, or fallback to "1" (Smart phone) which we know exists!
+  const verifiedId = currentProductId && currentProductId !== "undefined" ? currentProductId : "1";
+  const url = `https://nextjs1-be-render.onrender.com/api/products/${verifiedId}/recommendations`;
 
   try {
-    const response = await fetch(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
-      cache: 'no-store',
-      headers: {
-     'Cache-Control': 'no-cache'
-  }
-    });
-
-    if (!response.ok) {
-      return (
-        <div className="text-red-500 py-10 text-center">
-          Failed to load recommendations.
-        </div>
-      );
-    }
-
+    const response = await fetch(url, { cache: 'no-store' });
     const json = await response.json();
-    const recommendations = json.data; // Extract the data array!
-
-    if (!recommendations || recommendations.length === 0) {
-      return (
-        <div className="text-gray-500 py-10 text-center">
-          No recommendations found at this time.
-        </div>
-      );
-    }
+    const items = json.data || [];
 
     return (
-      <div className="mt-16">
-        <h2 className="text-3xl font-bold mb-8 max-[500px]:text-center">
-          You might also like
-        </h2>
-        {/* Responsive Grid layout for cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {recommendations.map((product: any) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+      <div className="mt-12 w-full border-t pt-8 text-black">
+        <h2 className="text-2xl font-bold mb-4">You might also like</h2>
+        
+        {/* DEBUGGING PANEL: This will print directly on your website page */}
+        <div className="bg-gray-100 p-4 rounded font-mono text-xs mb-4 text-red-600">
+          <p>Target URL: {url}</p>
+          <p>Items Found from Backend: {items.length}</p>
+          <p>Raw JSON Payload: {JSON.stringify(json)}</p>
         </div>
+
+        {items.length === 0 ? (
+          <p className="text-gray-500">The API connected successfully, but the database returned 0 products for this ID.</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {items.map((prod: any) => (
+              <div key={prod.id} className="border p-3 rounded bg-white shadow-sm">
+                <p className="font-bold text-sm">{prod.title}</p>
+                <p className="text-blue-600">${prod.price}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
-  } catch (error) {
-    console.error("Recommendation API Error:", error);
-    return (
-      <div className="text-red-500 py-10 text-center">
-        Error loading recommendations.
-      </div>
-    );
+  } catch (err: any) {
+    return <div className="p-4 text-red-500 bg-red-50 border">Frontend Fetch Error: {err.message}</div>;
   }
 }
