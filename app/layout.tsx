@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "@/Providers";
 import SessionTimeoutWrapper from "@/components/SessionTimeoutWrapper";
+import SupportWidget from "@/components/SupportWidget";
 // 1. REMOVE the import 'svgmap/dist/svgMap.min.css'; line
 
 const inter = Inter({ subsets: ["latin"] });
@@ -39,6 +40,8 @@ export default async function RootLayout({
           <Providers>
             {children}
           </Providers>
+          {/* 🤖 The floating customer support autonomous engine */}
+          <SupportWidget />
           <Footer />
         </SessionProvider>
       </body>
